@@ -18,10 +18,10 @@ var knownTimeStrings = []timeString {
 	{`[\w]+[\s][\d]{1,2},[\s][\d]{4}`, `January 2, 2006, 03:04 PM`},
 }
 
-func parseTimeString(s string) time.Time {
+func parseTimeString(s string) (*time.Time, error) {
 
 	if len(s) < 10 {
-		panic(fmt.Sprintf("Passed string is too short: %s", s))
+		return nil, fmt.Errorf("Passed string is too short: %s", s)
 	}
 
 	s = s[strings.Index(s, ",") + 2:]
@@ -33,15 +33,15 @@ func parseTimeString(s string) time.Time {
 		if m, e := regexp.MatchString(ts.Regexp, s); m {
 			
 			if res, err := time.Parse(ts.String, s); err != nil {
-				panic(err)
+				return nil, err
 			} else {
-				return res
+				return &res, nil
 			}
 		} else if e != nil{
-			panic(e)
+			return nil, e
 		}
 		
 	}
 
-	panic(fmt.Sprintf("Unknown string given. %s", s))
+	return nil, fmt.Errorf("Passed string is too short: %s", s)
 }

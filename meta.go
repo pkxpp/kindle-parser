@@ -2,7 +2,7 @@ package main
 
 
 import (
-//	"strings"
+	"strings"
 	"time"
 )
 
@@ -11,9 +11,11 @@ import (
 // - Your Highlight Location 4407-4408 | Added on Wednesday, November 02, 2011, 12:42 AM
 
 
-func parseMetaString(s string) (page int, location string, t time.Time ) {
+func parseMetaString(s string) (page int, location string, t time.Time, error) {
 
-//	temp := strings.Split(s, "|")
+	temp := strings.Split(s, "|")
+
+	if len(temp) 
 
 
 	return 0, "wtf", time.Now()
