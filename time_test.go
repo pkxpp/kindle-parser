@@ -42,20 +42,26 @@ var parseTimeStringTests = []struct {
 		nil,
 		errors.New("Passed string is too short: bad word"),
 	},
+	{
+		"abcdefghijklmnop",
+		nil,
+		errors.New("String of unknown format given: abcdefghijklmnop"),
+	},
 }
 
 func TestParseTimeString(t *testing.T) {
 
-	fmt.Println("running TestParseTimeString")
-
-	for _, pair := range parseTimeStringTests {
+	for _, testData := range parseTimeStringTests {
 		
-		res, err := parseTimeString(pair.s)
+		res, err := parseTimeString(testData.s)
 
-		if expected, ok := pair.expected.(time.Time); ok && !res.Equal(expected){
-			t.Error("Date not equal! string: '", pair.s, "'| res: ", res.Local(), "| expected: ", expected.Local())
-		} else if res != nil && err != nil && err.Error() != pair.e.Error() {
-			t.Error("Wrong error! string: '", pair.s, "'| res: ", err, "| expected: ", pair.e)
+		fmt.Println(testData, res)
+
+		if expected, ok := testData.expected.(time.Time); ok && !res.Equal(expected){
+			t.Error("Date not equal! string: '", testData.s, "'| res: ", res.Local(), "| expected: ", expected.Local())
+		} else if err != nil && err.Error() != testData.e.Error() {
+			fmt.Println(len(err.Error()), len(testData.e.Error()))
+			t.Error("Wrong error! string: '", testData.s, "'| res: ", err.Error(), "| expected: ", testData.e.Error())
 		}
 
 	}

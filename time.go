@@ -23,16 +23,13 @@ func parseTimeString(s string) (*time.Time, error) {
 	if len(s) < 10 {
 		return nil, fmt.Errorf("Passed string is too short: %s", s)
 	}
-
-	s = s[strings.Index(s, ",") + 2:]
-
-	fmt.Println(s)
+	clearedString := s[strings.Index(s, ",") + 2:]
 
 	for _, ts := range knownTimeStrings {
 
-		if m, e := regexp.MatchString(ts.Regexp, s); m {
+		if m, e := regexp.MatchString(ts.Regexp, clearedString); m {
 			
-			if res, err := time.Parse(ts.String, s); err != nil {
+			if res, err := time.Parse(ts.String, clearedString); err != nil {
 				return nil, err
 			} else {
 				return &res, nil
@@ -43,5 +40,5 @@ func parseTimeString(s string) (*time.Time, error) {
 		
 	}
 
-	return nil, fmt.Errorf("Passed string is too short: %s", s)
+	return nil, fmt.Errorf("String of unknown format given: %s", s)
 }
