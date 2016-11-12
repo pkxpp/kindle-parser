@@ -85,10 +85,7 @@ func TestBook(t *testing.T) {
 			t.Errorf("Wrong book created! String: %s | Actual: %v | Expected: %v", d.s, res, d.b)
 		}
 		if err != d.e && err.Error() != d.e.Error() {
-
-			fmt.Println("Fucking error: ", len(err.Error()), err)
-			fmt.Println("Fucking error: ", len(d.e.Error()), d.e)			
 			t.Errorf("Wrong error message! String: %s | Actual: %v | Expected: %v", d.s, err, d.e)
-		}			
+		}
 	}
 }
