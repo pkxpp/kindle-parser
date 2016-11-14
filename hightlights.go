@@ -18,25 +18,35 @@ type Highlight struct {
 	Time time.Time
 }
 
-type Highlights struct {
-	hc []*Highlight
-	hf map[string][]*Highlight
+type HighlightStorage struct {
+	hs []*Highlight
+	byText map[string][]*Highlight
+	byBook map[Book][]*Highlight
 }
 
-func (hc *Highlights) Add(h *Highlight) error {
-	if hc.Contains(h) {
+func NewHighlightStorage() HighlightStorage {
+	return HighlightStorage{
+		make([]*Highlight, 0, 20),
+		make(map[string][]*Highlight),
+		make(map[Book][]*Highlight),
+	}
+}
+
+func (hs *HighlightStorage) Add(h *Highlight) error {
+	if hs.Contains(h) {
 		return fmt.Errorf("Highlight already exists: ", h)
 	}
-	hc.hc = append(hc.hc, h) 
-	hc.hf[h.Text] = append(hc.hf[h.Text], h)
+	hs.hs = append(hs.hs, h) 
+	hs.byText[h.Text] = append(hs.byText[h.Text], h)
+	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], h)
 	return nil
 }
 
-func (hc *Highlights) Contains(h *Highlight) bool {
-	if _, ok := hc.hf[h.Text]; !ok {
+func (hs *HighlightStorage) Contains(h *Highlight) bool {
+	if _, ok := hs.byText[h.Text]; !ok {
 		return false
 	}
-	for _, hp := range hc.hf[h.Text] {
+	for _, hp := range hs.byText[h.Text] {
 		if hp == h || *hp == *h { // TODO: check that Book field equeal! 
 			return true 
 		}
@@ -44,11 +54,15 @@ func (hc *Highlights) Contains(h *Highlight) bool {
 	return false
 }
 
-func (hc *Highlights) GetByText(t string) ([]*Highlight, error) {
-	if res, ok := hc.hf[t]; ok {
+func (hs *HighlightStorage) Len() int {
+	return len(hs.hs)
+}
+
+func (hs *HighlightStorage) GetByText(t string) ([]*Highlight, error) {
+	if res, ok := hs.byText[t]; ok {
 		return res, nil
 	}
-	return nil, fmt.Errorf("Highlights with such text doesn't exist (%s)", t)	
+	return nil, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
 }
 
 
@@ -58,6 +72,6 @@ func ParseHighlight(s string, ) {
 }
 
 
-func ParseClippingsFile(s string) Hightlights {
-	return nil
+func ParseClippingsFile(s string) HighlightStorage {
+	return HighlightStorage{}
 }
