@@ -7,15 +7,20 @@ import (
 //	"log"
 //	"os"
 	"time"
-	
+//	"github.com/davecgh/go-spew/spew"
 )
 
 
 type Highlight struct {
 	Book *Book
 	Text string
+	Page int
 	Location string
 	Time time.Time
+}
+
+func (h *Highlight) IsZero() bool {
+	return h.Book == nil && h.Text == "" && h.Page == 0 && h.Location == "" && h.Time.IsZero()
 }
 
 type HighlightStorage struct {
@@ -62,7 +67,7 @@ func (hs *HighlightStorage) GetByText(t string) ([]*Highlight, error) {
 	if res, ok := hs.byText[t]; ok {
 		return res, nil
 	}
-	return nil, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
+	return []*Highlight{}, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
 }
 
 

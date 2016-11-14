@@ -17,13 +17,6 @@ type BookStorage struct {
 	storage map[string][]*Book // should I use list of pointers or pointer on list of books or pointer on list of pointers
 }
 
-
-type BookStorageI interface {
-	Add(b *Book)
-	Contains(b *Book)
-	Remove(b *Book)
-}
-
 func NewBookStorage() BookStorage {
 	return BookStorage{make(map[string][]*Book)}
 }
@@ -35,8 +28,9 @@ func (bs *BookStorage) Add(bp *Book) error {
 
 func (bs *BookStorage) AddIfMissing(bp *Book) error {
 	if books, ok := bs.storage[bp.Author]; ok {
-		for _, book := range books {
-			if bp == book || *bp == *book {
+		for i := range books {
+			if bp == books[i] || *bp == *books[i] {
+				bp = books[i]
 				return nil
 			}
 		}
@@ -46,8 +40,8 @@ func (bs *BookStorage) AddIfMissing(bp *Book) error {
 
 func (bs *BookStorage) Contains(bp *Book) bool {
 	if books, ok := bs.storage[bp.Author]; ok {
-		for _, book := range books {
-			if bp == book || *bp == *book {
+		for i := range books {
+			if bp == books[i] || *bp == *books[i] {
 				return true
 			}
 		}

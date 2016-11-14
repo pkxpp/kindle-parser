@@ -50,19 +50,19 @@ func TestBookStorage(t *testing.T) {
 	fmt.Println(bs)
 
 	bs.Add(&books[0])
-	checkLen(&bs, t, 1)
+	checkLenBs(&bs, t, 1)
 
 	bs.AddIfMissing(&books[0])
-	checkLen(&bs, t, 1)
+	checkLenBs(&bs, t, 1)
 
 	ob := Book{"Iain Banks", "Excession"}
 	bs.Remove(&ob)
-	checkLen(&bs, t, 0)
+	checkLenBs(&bs, t, 0)
 
 	for _, book := range books {
 		bs.Add(&book)
 	}
-	checkLen(&bs, t, len(books))
+	checkLenBs(&bs, t, len(books))
 	
 
 	books[0].Title = "Use of Weapons"
@@ -71,7 +71,7 @@ func TestBookStorage(t *testing.T) {
 
 }
 
-func checkLen(bs *BookStorage, t *testing.T, expected int) {
+func checkLenBs(bs *BookStorage, t *testing.T, expected int) {
 	if len := bs.Len(); len != expected {
 		t.Errorf("Wrong Len of BookStorage. Actual: %d. Expected: %", len, expected)
 	}
