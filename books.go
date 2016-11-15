@@ -75,5 +75,5 @@ func CreateBook(s string) (Book, error) {
 	if oi, ci := strings.LastIndex(s, "("), strings.LastIndex(s, ")"); oi != -1 && oi < ci {
 		return Book{s[oi+1: ci], strings.Trim(s[:oi], " ")}, nil
 	}
-	return Book{}, fmt.Errorf("Unknown string format: %s", s)	
+	return Book{"", strings.Trim(s, " ")}, nil
 }

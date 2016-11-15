@@ -29,9 +29,14 @@ var bookStrings = []struct{
 	},
 	{
 		"FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj((((",
-		Book{},
-		fmt.Errorf("Unknown string format: %s", "FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj(((("),
-	},	
+		Book{"", "FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj(((("},
+		nil,
+	},
+	{
+		"The New Oxford American Dictionary",
+		Book{"", "The New Oxford American Dictionary"},
+		nil,
+	},
 }
 
 
