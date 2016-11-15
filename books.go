@@ -30,7 +30,7 @@ func (bs *BookStorage) AddIfMissing(bp *Book) error {
 	if books, ok := bs.storage[bp.Author]; ok {
 		for i := range books {
 			if bp == books[i] || *bp == *books[i] {
-				bp = books[i]
+				*bp = *books[i]
 				return nil
 			}
 		}

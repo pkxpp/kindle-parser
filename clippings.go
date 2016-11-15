@@ -1,13 +1,11 @@
 package main
 
 import (
-//	"bytes"
 	"bufio"
 	"fmt"
 	"log"
 	"os"
 )
-
 
 func check(e error) {
 	if e != nil {
@@ -21,9 +19,6 @@ func ParseFile(filename string) {
 	check(err)
 
 	defer file.Close()
-
-//	res := make([]string, 1000)
-//	var currentRecord bytes.Buffer
 
 	scanner := bufio.NewScanner(file)
 
@@ -39,20 +34,21 @@ func ParseFile(filename string) {
 		var bp *Book
 		currentString := scanner.Text()
 
-		fmt.Println("\nPrinting string:\n", currentString, "\n")
-		
 		if len(currentString) > 3 && currentString[0:3] == "===" {
 			si = 1
 			if ! highlight.IsZero() {
+				fmt.Println("Adding highlight: ", highlight)
 				hs.Add(&highlight)
-			}
+				highlight = Highlight{}
+			} // TODO: else log error if highlight is incomplete
 			continue
 		}
 
 		if si == 1 {
-			book, e := CreateBook(currentString)
+			book, e := CreateBook(currentString) // TODO: this is ugly and probably stupid
+			bp = &book
 			check(e)
-			e = bs.AddIfMissing(&book)
+			e = bs.AddIfMissing(bp)
 			check(e)
 			highlight.Book = bp
 		} else if si == 2 {
