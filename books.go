@@ -8,7 +8,7 @@ import (
 )
 
 type Book struct {
-	Id int	
+	Id uint	
 	Author string
 	Title string
 }
@@ -24,6 +24,10 @@ type BookStorage struct {
 
 func NewBookStorage() BookStorage {
 	return BookStorage{make([]Book, 0), make(map[string][]uint)}
+}
+
+func (bs *BookStorage) Books() *[]Book {
+	return &bs.storage
 }
 
 func (bs *BookStorage) Add(bp *Book) error {

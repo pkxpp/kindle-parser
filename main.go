@@ -8,8 +8,13 @@ import (
 
 func main() {
 
-	ParseFile(os.Args[1])
+	hs, bs, e := ParseFile(os.Args[1])
 
-	fmt.Println("hi")
+	check(e)
+	
+	fmt.Println(hs.Len(), bs.Len())
+
+
+	saveBooks(bs)
 
 }

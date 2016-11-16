@@ -13,13 +13,13 @@ func check(e error) {
 	}
 }
 
-func ParseFile(filename string) {
+func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 
 	file, err := os.Open(filename)
 	check(err)
 
 	defer file.Close()
-
+ 
 	scanner := bufio.NewScanner(file)
 
 	bs := NewBookStorage()
@@ -63,5 +63,7 @@ func ParseFile(filename string) {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	return &hs, &bs, nil
 
 }
