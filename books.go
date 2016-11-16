@@ -8,10 +8,14 @@ import (
 )
 
 type Book struct {
+	Id int	
 	Author string
 	Title string
 }
 
+func NewBook(author, title string) (Book) {
+	return Book{0, author, title}
+}
 
 type BookStorage struct {
 	storage map[string][]*Book // should I use list of pointers or pointer on list of books or pointer on list of pointers
@@ -73,7 +77,7 @@ func (bs *BookStorage) Len() int {
 
 func CreateBook(s string) (Book, error) {
 	if oi, ci := strings.LastIndex(s, "("), strings.LastIndex(s, ")"); oi != -1 && oi < ci {
-		return Book{s[oi+1: ci], strings.Trim(s[:oi], " ")}, nil
+		return Book{0, s[oi+1: ci], strings.Trim(s[:oi], " ")}, nil
 	}
-	return Book{"", strings.Trim(s, " ")}, nil
+	return Book{0, "", strings.Trim(s, " ")}, nil
 }

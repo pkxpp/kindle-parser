@@ -14,37 +14,37 @@ var bookStrings = []struct{
 } {
 	{
 		"Стихотворения (1908-1937) (Осип Мандельштам)",
-		Book{"Осип Мандельштам", "Стихотворения (1908-1937)"},
+		NewBook("Осип Мандельштам", "Стихотворения (1908-1937)"),
 		nil,
 	},
 	{
 		"Learning PHP, MySQL, JavaScript, CSS & HTML5 (Robin Nixon)",
-		Book{"Robin Nixon", "Learning PHP, MySQL, JavaScript, CSS & HTML5"},
+		NewBook("Robin Nixon", "Learning PHP, MySQL, JavaScript, CSS & HTML5"),
 		nil,
 	},
 	{
 		"Getting Things Done: How to achieve stress-free productivity (Allen, David)",
-		Book{"Allen, David", "Getting Things Done: How to achieve stress-free productivity"},
+		NewBook("Allen, David", "Getting Things Done: How to achieve stress-free productivity"),
 		nil,
 	},
 	{
 		"FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj((((",
-		Book{"", "FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj(((("},
+		NewBook("", "FDJKLSJDFJJJFDSJSLKDJFKLSJ ||||| sdjlkf jlsdkjf lkj(((("),
 		nil,
 	},
 	{
 		"The New Oxford American Dictionary",
-		Book{"", "The New Oxford American Dictionary"},
+		NewBook("", "The New Oxford American Dictionary"),
 		nil,
 	},
 }
 
 
 var books = []Book{
-	{"Iain Banks", "Excession"},
-	{"Iain Banks", "State of the art"},
-	{"Bertrand Russell", "A History of Western Philosophy"},
-	{"Robert Martin", "Clean Code"},			
+	NewBook("Iain Banks", "Excession"),
+	NewBook("Iain Banks", "State of the art"),
+	NewBook("Bertrand Russell", "A History of Western Philosophy"),
+	NewBook("Robert Martin", "Clean Code"),			
 }
 
 
@@ -60,7 +60,7 @@ func TestBookStorage(t *testing.T) {
 	bs.AddIfMissing(&books[0])
 	checkLenBs(&bs, t, 1)
 
-	ob := Book{"Iain Banks", "Excession"}
+	ob := Book{0, "Iain Banks", "Excession"}
 	bs.Remove(&ob)
 	checkLenBs(&bs, t, 0)
 

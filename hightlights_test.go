@@ -7,10 +7,10 @@ import (
 )
 
 var b = []Book {
-	{"Iain Banks", "Excession"},
-	{"Iain Banks", "State of the art"},
-	{"Bertrand Russell", "A History of Western Philosophy"},
-	{"Robert Martin", "Clean Code"},			
+	NewBook("Iain Banks", "Excession"),
+	NewBook("Iain Banks", "State of the art"),
+	NewBook("Bertrand Russell", "A History of Western Philosophy"),
+	NewBook("Robert Martin", "Clean Code"),			
 }
 
 var highlights = []Highlight {
