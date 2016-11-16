@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-//	"regexp"
+	//	"regexp"
 	"strings"
 )
 
@@ -18,34 +18,36 @@ func NewBook(author, title string) (Book) {
 }
 
 type BookStorage struct {
-	storage map[string][]*Book // should I use list of pointers or pointer on list of books or pointer on list of pointers
+	storage []Book
+	byAuthor map[string][]uint // should I use list of pointers or pointer on list of books or pointer on list of pointers
 }
 
 func NewBookStorage() BookStorage {
-	return BookStorage{make(map[string][]*Book)}
+	return BookStorage{make([]Book, 0), make(map[string][]uint)}
 }
 
 func (bs *BookStorage) Add(bp *Book) error {
-	bs.storage[bp.Author] = append(bs.storage[bp.Author], bp)
+	bs.storage = append(bs.storage, *bp)
+	bs.byAuthor[bp.Author] = append(bs.byAuthor[bp.Author], uint(len(bs.storage)-1))
 	return nil
 }
 
-func (bs *BookStorage) AddIfMissing(bp *Book) error {
-	if books, ok := bs.storage[bp.Author]; ok {
-		for i := range books {
-			if bp == books[i] || *bp == *books[i] {
-				*bp = *books[i]
+func (bs *BookStorage) AddIfMissing(bp *Book) error { // TODO: now it doesn't change pointer like before | It's too complicated and error-prone
+	if indexes, ok := bs.byAuthor[bp.Author]; ok {
+		for _, i := range indexes {
+			if *bp == bs.storage[i] {
+				bp = &bs.storage[i] // TODO: this is pointles
 				return nil
 			}
 		}
 	}
-	return bs.Add(bp)
+	return bs.Add(bp) 
 }
 
 func (bs *BookStorage) Contains(bp *Book) bool {
-	if books, ok := bs.storage[bp.Author]; ok {
-		for i := range books {
-			if bp == books[i] || *bp == *books[i] {
+	if indexes, ok := bs.byAuthor[bp.Author]; ok {
+		for _, i := range indexes {
+			if *bp == bs.storage[i] {
 				return true
 			}
 		}
@@ -54,12 +56,11 @@ func (bs *BookStorage) Contains(bp *Book) bool {
 }
 
 func (bs *BookStorage) Remove(bp *Book) error {
-	if books, ok := bs.storage[bp.Author]; ok {
-
-
-		for i, book := range books {
-			if bp == book || *bp == *book {
-				bs.storage[bp.Author] = append(bs.storage[bp.Author][:i], bs.storage[bp.Author][i+1:]...) // TODO: it might panic
+	if indexes, ok := bs.byAuthor[bp.Author]; ok {
+		for i := range indexes {
+			if *bp == bs.storage[indexes[i]] {
+				bs.storage = append(bs.storage[:i], bs.storage[i+1:]...) // TODO: it might be very costly, consider list usage
+				bs.byAuthor[bp.Author] = append(bs.byAuthor[bp.Author][:i], bs.byAuthor[bp.Author][i+1:]...) // TODO: it might panic
 			}
 		}
 	}
@@ -68,7 +69,7 @@ func (bs *BookStorage) Remove(bp *Book) error {
 
 func (bs *BookStorage) Len() int {
 	res := 0
-	for _, s := range bs.storage {
+	for _, s := range bs.byAuthor {
 		res += len(s)
 	}
 	return res
