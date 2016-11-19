@@ -19,23 +19,42 @@ func init() {
 
 func SaveToDb(hs *HighlightStorage) {
 
-
-	stmt, err := db.Prepare("INSERT INTO highlights(text, ) VALUES(?)")
-	if err != nil {
-		log.Fatal(err)
+	db, e := sql.Open(DbVendor, DbConnString)
+	if e != nil {
+		log.Fatal(e)
 	}
-	_, err = stmt.Exec("Dolly")
-	if err != nil {
-		log.Fatal(err)
+	defer db.Close() // TODO: defer in init()
+	
+	highlights := hs.hs
+
+	for i, highlight := range highlights {
+
+		stmt, err := db.Prepare(`
+INSERT INTO highlights(text, page, location, time, book_id) VALUES(?, ?, ?, ?, ?)
+`)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(highlight, *highlight)
+		fmt.Println(highlights[i], *highlights[i])
+		fmt.Println(highlights[i:i+10], highlights[i:i+10])
+		
+		res, err := stmt.Exec(highlight.Text, highlight.Page, highlight.Location, highlight.Time, 1)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		lastId, err := res.LastInsertId()
+
+		fmt.Println("Last id", lastId, i)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+//		highlights[i].Id = uint(lastId)
+		
 	}
-	
-
-
-	var t string
-	
-	e := db.QueryRow("select t from test;").Scan(&t)
-
-	fmt.Println(t, e)
 
 }
 

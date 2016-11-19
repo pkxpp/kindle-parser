@@ -50,7 +50,7 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 			check(e)
 			e = bs.AddIfMissing(bp)
 			check(e)
-			highlight.Book = bp
+			highlight.Book = bp // TODO: pointer isn't changed! This is definetly a bug!
 		} else if si == 2 {
 			highlight.Page, highlight.Location, highlight.Time, _ = parseMetaString(currentString)
 		} else if si == 4 {

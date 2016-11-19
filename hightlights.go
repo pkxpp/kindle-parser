@@ -41,6 +41,8 @@ func (hs *HighlightStorage) Add(h *Highlight) error {
 	if hs.Contains(h) {
 		return fmt.Errorf("Highlight already exists: ", h)
 	}
+
+	fmt.Println("From hs.Add: ", h)
 	hs.hs = append(hs.hs, h) 
 	hs.byText[h.Text] = append(hs.byText[h.Text], h)
 	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], h)

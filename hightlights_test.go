@@ -1,7 +1,7 @@
 package main
 
 import (
-//	"fmt"
+	"fmt"
 	"time"
 	"testing"
 )
@@ -31,6 +31,8 @@ func TestAdd(t *testing.T) {
 		t.Errorf("Got error when tried to add valid highlight. Highlight: %+v | Error: %+v ", h, err)
 	}
 	checkLen(hs.Len(), 1, "HighligghtStorage", t)
+
+	fmt.Println(hs.hs[0], h)
 }
 
 func TestContains(t *testing.T) {
