@@ -42,10 +42,13 @@ func (hs *HighlightStorage) Add(h *Highlight) error {
 		return fmt.Errorf("Highlight already exists: ", h)
 	}
 
-	fmt.Println("From hs.Add: ", h)
-	hs.hs = append(hs.hs, h) 
+	fmt.Println("From hs.Add: ", &h, h)
+	hs.hs = append(hs.hs, h)
+	fmt.Println("Hs after appending: ", hs.hs)
 	hs.byText[h.Text] = append(hs.byText[h.Text], h)
 	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], h)
+
+	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)	
 	return nil
 }
 
