@@ -4,7 +4,7 @@ import (
 //	"bytes"
 //	"bufio"
 	"fmt"
-//	"log"
+	"log"
 //	"os"
 	"time"
 //	"github.com/davecgh/go-spew/spew"
@@ -24,40 +24,47 @@ func (h *Highlight) IsZero() bool {
 }
 
 type HighlightStorage struct {
-	hs []*Highlight
-	byText map[string][]*Highlight
-	byBook map[Book][]*Highlight
+	storage []Highlight
+	byText map[string][]uint
+	byBook map[Book][]uint
 }
 
-func NewHighlightStorage() HighlightStorage {
+func NewHighlightStorage() HighlightStorage { // TODO: default argument
 	return HighlightStorage{
-		make([]*Highlight, 0, 20),
-		make(map[string][]*Highlight),
-		make(map[Book][]*Highlight),
+		make([]Highlight, 0, 20),
+		make(map[string][]uint),
+		make(map[Book][]uint),
 	}
 }
 
-func (hs *HighlightStorage) Add(h *Highlight) error {
+func (hs *HighlightStorage) Add(h Highlight) error {
 	if hs.Contains(h) {
 		return fmt.Errorf("Highlight already exists: ", h)
 	}
 
-	fmt.Println("From hs.Add: ", &h, h)
-	hs.hs = append(hs.hs, h)
-	fmt.Println("Hs after appending: ", hs.hs)
-	hs.byText[h.Text] = append(hs.byText[h.Text], h)
-	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], h)
+//	fmt.Println("From hs.Add: ", &h, h)
+	hs.storage = append(hs.storage, h)
+//	fmt.Println("Hs after appending: ", hs.storage)
 
-	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)	
+	index := len(hs.storage) - 1
+	if index < 0 {
+		log.Fatalf("Index less than zero and it can lead to strage shit. Index: %d", index)
+	}
+	
+	hs.byText[h.Text] = append(hs.byText[h.Text], uint(index))
+	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], uint(index))
+
+//	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)	
 	return nil
 }
 
-func (hs *HighlightStorage) Contains(h *Highlight) bool {
+func (hs *HighlightStorage) Contains(h Highlight) bool {
 	if _, ok := hs.byText[h.Text]; !ok {
 		return false
 	}
-	for _, hp := range hs.byText[h.Text] {
-		if hp == h || *hp == *h { // TODO: check that Book field equeal! 
+	for _, index := range hs.byText[h.Text] {
+		if hs.storage[index] == h { // TODO: check that Book field equeal!
+			// TODO: think about Id!!
 			return true 
 		}
 	}
@@ -65,14 +72,18 @@ func (hs *HighlightStorage) Contains(h *Highlight) bool {
 }
 
 func (hs *HighlightStorage) Len() int {
-	return len(hs.hs)
+	return len(hs.storage)
 }
 
-func (hs *HighlightStorage) GetByText(t string) ([]*Highlight, error) {
-	if res, ok := hs.byText[t]; ok {
+func (hs *HighlightStorage) GetByText(t string) ([]Highlight, error) {
+	if indexes, ok := hs.byText[t]; ok {
+		res := make([]Highlight, 0, len(indexes))
+		for _, index := range indexes {
+			res = append(res, hs.storage[index])
+		}
 		return res, nil
 	}
-	return []*Highlight{}, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
+	return nil, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
 }
 
 

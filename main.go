@@ -14,10 +14,10 @@ func main() {
 	
 	fmt.Println(hs.Len(), bs.Len())
 
-	highlights := hs.hs
+	highlights := hs.storage
 
 	for i := range highlights {
-		fmt.Println(&hs.hs[i], hs.hs[i])
+		fmt.Println(&hs.storage[i], hs.storage[i])
 	}
 
 
@@ -31,6 +31,6 @@ func main() {
 
 	saveBooks(bs)
 
-//	SaveToDb(hs)
+	SaveToDb(hs)
 
 }

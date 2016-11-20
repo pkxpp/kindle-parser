@@ -31,11 +31,6 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 	
 	for scanner.Scan() {
 
-		if len(hs.hs) > 3 {
-			return &hs, &bs, nil
-		}
-			
-
 		var bp *Book
 		currentString := scanner.Text()
 
@@ -43,7 +38,7 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 			si = 1
 			if ! highlight.IsZero() {
 				fmt.Println("Adding highlight: ", &highlight, highlight)
-				hs.Add(&highlight)
+				hs.Add(highlight)
 				highlight = Highlight{}
 				fmt.Println("Highlight after zeeroing: ", &highlight, highlight)
 			} // TODO: else log error if highlight is incomplete

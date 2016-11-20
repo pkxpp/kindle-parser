@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+//	"fmt"
 	"time"
 	"testing"
 )
@@ -27,46 +27,46 @@ func TestAdd(t *testing.T) {
 	hs := NewHighlightStorage()
 
 	h := highlights[0]
-	if err := hs.Add(&h); err != nil {
+	if err := hs.Add(h); err != nil {
 		t.Errorf("Got error when tried to add valid highlight. Highlight: %+v | Error: %+v ", h, err)
 	}
 	checkLen(hs.Len(), 1, "HighligghtStorage", t)
 
-	fmt.Println(hs.hs[0], h)
+	if hs.storage[0].Text != highlights[0].Text {
+		t.Errorf("Different texts. Actual: %s | Expected: %s ", hs.storage[0].Text, highlights[0].Text)
+	}
 }
 
 func TestContains(t *testing.T) {
 	hs := NewHighlightStorage()
 
-	
-
 	h1, h2 := highlights[1], highlights[4]
-	testContains(&hs, &h1, false, t)	
-	testContains(&hs, &h2, false, t)
+	testContains(&hs, h1, false, t)	
+	testContains(&hs, h2, false, t)
 	
-	testAdd(&hs, &h1, "", t)
-	testContains(&hs, &h1, true, t)	
-	testContains(&hs, &h2, false, t)
+	testAdd(&hs, h1, "", t)
+	testContains(&hs, h1, true, t)	
+	testContains(&hs, h2, false, t)
 	
-	testAdd(&hs, &h2, "", t)
-	testContains(&hs, &h1, true, t)
-	testContains(&hs, &h2, true, t)
-	testContains(&hs, &highlights[0], false, t)
+	testAdd(&hs, h2, "", t)
+	testContains(&hs, h1, true, t)
+	testContains(&hs, h2, true, t)
+	testContains(&hs, highlights[0], false, t)
 
 	checkLen(hs.Len(), 2, "HighligghtStorage", t)
 
 }
 
-func testAdd(hs *HighlightStorage, h *Highlight, em string, t *testing.T) {
+func testAdd(hs *HighlightStorage, h Highlight, em string, t *testing.T) {
 	if err := hs.Add(h); em == "" && err != nil {
-		t.Errorf("Got error when tried to add valid highlight. Highlight: %+v | Error: %+v ", *h, err)
+		t.Errorf("Got error when tried to add valid highlight. Highlight: %+v | Error: %+v ", h, err)
 	} else if em != "" && em != err.Error() {
-		t.Errorf("Wrong error message when tried to add valid highlight. Highlight: %+v | Expected: %s | Actual: %s", *h, em, err.Error())
+		t.Errorf("Wrong error message when tried to add valid highlight. Highlight: %+v | Expected: %s | Actual: %s", h, em, err.Error())
 	}
 }
 
-func testContains(hs *HighlightStorage, hp *Highlight, e bool, t *testing.T) {
-	if hs.Contains(hp) != e {
+func testContains(hs *HighlightStorage, h Highlight, e bool, t *testing.T) {
+	if hs.Contains(h) != e {
 		t.Errorf("Wrong Contains result. H: %#v | Actual: %t | Expected: %t ") 
 	}
 }
@@ -78,7 +78,7 @@ func TestGetByText (t *testing.T) {
 	hs := NewHighlightStorage()
 
 	for i := range highlights {
-		testAdd(&hs, &highlights[i], "", t)
+		testAdd(&hs, highlights[i], "", t)
 	}
 
 	checkLen(hs.Len(), len(highlights), "HighlightStorage", t)
@@ -91,8 +91,6 @@ func TestGetByText (t *testing.T) {
 
 	temp, _ = hs.GetByText(" Entertain")
 	checkLen(len(temp), 1, "[]*Highlights", t)
-
-	
 }
 
 

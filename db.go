@@ -25,7 +25,7 @@ func SaveToDb(hs *HighlightStorage) {
 	}
 	defer db.Close() // TODO: defer in init()
 	
-	highlights := hs.hs
+	highlights := hs.storage
 
 	for i, highlight := range highlights {
 
@@ -36,10 +36,6 @@ INSERT INTO highlights(text, page, location, time, book_id) VALUES(?, ?, ?, ?, ?
 			log.Fatal(err)
 		}
 
-		fmt.Println(highlight, *highlight)
-		fmt.Println(highlights[i], *highlights[i])
-		fmt.Println(highlights[i:i+10], highlights[i:i+10])
-		
 		res, err := stmt.Exec(highlight.Text, highlight.Page, highlight.Location, highlight.Time, 1)
 		if err != nil {
 			log.Fatal(err)
