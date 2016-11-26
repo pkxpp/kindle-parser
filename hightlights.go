@@ -1,32 +1,36 @@
 package main
 
 import (
-//	"bytes"
-//	"bufio"
+	//	"bytes"
+	//	"bufio"
 	"fmt"
 	"log"
-//	"os"
+	//	"os"
+	"strings"
 	"time"
-//	"github.com/davecgh/go-spew/spew"
+	//	"github.com/davecgh/go-spew/spew"
 )
 
-
 type Highlight struct {
-	Book *Book
-	Text string
-	Page int
+	Book     *Book
+	Text     string
+	Page     int
 	Location string
-	Time time.Time
+	Time     time.Time
 }
 
 func (h *Highlight) IsZero() bool {
 	return h.Book == nil && h.Text == "" && h.Page == 0 && h.Location == "" && h.Time.IsZero()
 }
 
+func (h *Highlight) SetText(text string) {
+	h.Text = strings.Trim(text, " ,.'\"“’ ”")
+}
+
 type HighlightStorage struct {
 	storage []Highlight
-	byText map[string][]uint
-	byBook map[Book][]uint
+	byText  map[string][]uint
+	byBook  map[Book][]uint
 }
 
 func NewHighlightStorage() HighlightStorage { // TODO: default argument
@@ -42,19 +46,19 @@ func (hs *HighlightStorage) Add(h Highlight) error {
 		return fmt.Errorf("Highlight already exists: ", h)
 	}
 
-//	fmt.Println("From hs.Add: ", &h, h)
+	//	fmt.Println("From hs.Add: ", &h, h)
 	hs.storage = append(hs.storage, h)
-//	fmt.Println("Hs after appending: ", hs.storage)
+	//	fmt.Println("Hs after appending: ", hs.storage)
 
 	index := len(hs.storage) - 1
 	if index < 0 {
 		log.Fatalf("Index less than zero and it can lead to strage shit. Index: %d", index)
 	}
-	
+
 	hs.byText[h.Text] = append(hs.byText[h.Text], uint(index))
 	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], uint(index))
 
-//	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)	
+	//	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)
 	return nil
 }
 
@@ -65,7 +69,7 @@ func (hs *HighlightStorage) Contains(h Highlight) bool {
 	for _, index := range hs.byText[h.Text] {
 		if hs.storage[index] == h { // TODO: check that Book field equeal!
 			// TODO: think about Id!!
-			return true 
+			return true
 		}
 	}
 	return false
@@ -83,15 +87,12 @@ func (hs *HighlightStorage) GetByText(t string) ([]Highlight, error) {
 		}
 		return res, nil
 	}
-	return nil, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)	
+	return nil, fmt.Errorf("Highlight with such text doesn't exist (%s)", t)
 }
 
-
-func ParseHighlight(s string, ) {
-
+func ParseHighlight(s string) {
 
 }
-
 
 func ParseClippingsFile(s string) HighlightStorage {
 	return HighlightStorage{}
