@@ -19,7 +19,7 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 	check(err)
 
 	defer file.Close()
- 
+
 	scanner := bufio.NewScanner(file)
 
 	bs := NewBookStorage()
@@ -27,8 +27,9 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 
 	si := 1
 
-	highlight := Highlight{}	
-	
+	highlight := Highlight{}
+	var isErrorOnCurrentIteration bool
+
 	for scanner.Scan() {
 
 		var bp *Book
@@ -36,7 +37,7 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 
 		if len(currentString) > 3 && currentString[0:3] == "===" {
 			si = 1
-			if ! highlight.IsZero() {
+			if !highlight.IsZero() {
 				fmt.Println("Adding highlight: ", &highlight, highlight)
 				hs.Add(highlight)
 				highlight = Highlight{}
@@ -45,8 +46,18 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 			continue
 		}
 
+		if isErrorOnCurrentIteration {
+			continue
+		}
+
 		if si == 1 {
 			book, e := CreateBook(currentString) // TODO: this is ugly and probably stupid
+			if e != nil {
+				log.Printf("Couldn't create a book from string '%s'", currentString)
+				isErrorOnCurrentIteration = true
+				continue
+			}
+
 			bp = &book
 			check(e)
 			e = bs.AddIfMissing(bp)
@@ -55,9 +66,9 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 		} else if si == 2 {
 			highlight.Page, highlight.Location, highlight.Time, _ = parseMetaString(currentString)
 		} else if si == 4 {
-			highlight.Text = currentString
+			highlight.SetText(currentString)
 		}
-		
+
 		si++
 	}
 

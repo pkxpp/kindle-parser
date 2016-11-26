@@ -1,17 +1,15 @@
 package main
 
-
 import (
 	"fmt"
 	"testing"
 )
 
-
-var bookStrings = []struct{
+var bookStrings = []struct {
 	s string
 	b Book
 	e error
-} {
+}{
 	{
 		"Стихотворения (1908-1937) (Осип Мандельштам)",
 		NewBook("Осип Мандельштам", "Стихотворения (1908-1937)"),
@@ -39,14 +37,12 @@ var bookStrings = []struct{
 	},
 }
 
-
 var books = []Book{
 	NewBook("Iain Banks", "Excession"),
 	NewBook("Iain Banks", "State of the art"),
 	NewBook("Bertrand Russell", "A History of Western Philosophy"),
-	NewBook("Robert Martin", "Clean Code"),			
+	NewBook("Robert Martin", "Clean Code"),
 }
-
 
 func TestBookStorage(t *testing.T) {
 
@@ -68,11 +64,10 @@ func TestBookStorage(t *testing.T) {
 		bs.Add(&book)
 	}
 	checkLenBs(&bs, t, len(books))
-	
 
 	books[0].Title = "Use of Weapons"
 
-	fmt.Println(bs, books)	
+	fmt.Println(bs, books)
 
 }
 
@@ -81,7 +76,6 @@ func checkLenBs(bs *BookStorage, t *testing.T, expected int) {
 		t.Errorf("Wrong Len of BookStorage. Actual: %d. Expected: %", len, expected)
 	}
 }
-
 
 func TestBook(t *testing.T) {
 	for _, d := range bookStrings {

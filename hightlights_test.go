@@ -22,21 +22,21 @@ var highlights = []Highlight{
 	{&b[3], "WTF???????????????", 0, "30-31", time.Date(2015, 10, 19, 7, 36, 23, 0, time.UTC)},
 }
 
-var setTextExamples = []struct{
-	text string
+var setTextExamples = []struct {
+	text     string
 	expected string
 }{
 	{"simple", "simple"},
 	{" a bit harder", "a bit harder"},
 	{"Dot in the end.", "Dot in the end"},
 	{"“fascination.” ", "fascination"},
-	{"“conscientiousness,” " ,"conscientiousness"},
+	{"“conscientiousness,” ", "conscientiousness"},
 	{"shrink,’ ” ", "shrink"},
 }
 
 func TestSetText(t *testing.T) {
 	for _, ex := range setTextExamples {
-		h := Highlight{}		
+		h := Highlight{}
 		h.SetText(ex.text)
 		if h.Text != ex.expected {
 			t.Errorf("Set wrong text. Expected: `%s`, Got: `%s`", ex.expected, h.Text)

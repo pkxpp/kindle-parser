@@ -7,15 +7,12 @@ import (
 	"log"
 )
 
-
 var DbVendor, DbConnString = "sqlite3", "db.sqlite"
-
 
 var db sql.DB
 
 func init() {
 }
-
 
 func SaveToDb(hs *HighlightStorage) {
 
@@ -24,7 +21,7 @@ func SaveToDb(hs *HighlightStorage) {
 		log.Fatal(e)
 	}
 	defer db.Close() // TODO: defer in init()
-	
+
 	highlights := hs.storage
 
 	for i, highlight := range highlights {
@@ -48,21 +45,20 @@ INSERT INTO highlights(text, page, location, time, book_id) VALUES(?, ?, ?, ?, ?
 			log.Fatal(err)
 		}
 
-//		highlights[i].Id = uint(lastId)
-		
+		//		highlights[i].Id = uint(lastId)
+
 	}
 
 }
 
-
-func saveBooks(bs *BookStorage) (error) {
+func saveBooks(bs *BookStorage) error {
 
 	db, e := sql.Open(DbVendor, DbConnString)
 	if e != nil {
 		log.Fatal(e)
 	}
 	defer db.Close() // TODO: defer in init()
-	
+
 	books := *bs.Books()
 
 	for i := range books {
@@ -84,7 +80,6 @@ func saveBooks(bs *BookStorage) (error) {
 
 		books[i].Id = uint(lastId)
 	}
-	
-	
+
 	return nil
 }

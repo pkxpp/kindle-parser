@@ -5,13 +5,12 @@ import (
 	"testing"
 )
 
-
 var metaTests = []struct {
-	S string
-	Page int
+	S        string
+	Page     int
 	Location string
-	E error
-} {
+	E        error
+}{
 	{
 		`- Your Highlight on Page 5 | Location 64-64 | Added on Tuesday, November 01, 2011, 08:49 AM`,
 		5,
@@ -25,7 +24,6 @@ var metaTests = []struct {
 		nil,
 	},
 }
-
 
 func TestParseMetaString(t *testing.T) {
 
@@ -45,7 +43,7 @@ func TestParseMetaString(t *testing.T) {
 
 		if e != data.E {
 			t.Error("Errors not equal. Expected: ", data.E, " | Got: ", e)
-		}			
+		}
 	}
 
 }

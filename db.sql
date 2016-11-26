@@ -1,11 +1,8 @@
-CREATE TABLE books(
-id PRIMARY KEY,
-author TEXT,
-title TEXT,
-);
+CREATE TABLE books(id int primary key, author text, title text);
+
 
 CREATE TABLE highlights(
-id,
+id INT PRIMARY KEY,
 'text' TEXT,
 location TEXT,
 book_id INT,

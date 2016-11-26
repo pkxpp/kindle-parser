@@ -8,10 +8,10 @@ import (
 )
 
 var parseTimeStringTests = []struct {
-	s string
+	s        string
 	expected interface{}
-	e error
-} {
+	e        error
+}{
 	{
 		"Added on Monday, 31 October 2016 07:27:46",
 		time.Date(2016, 10, 31, 7, 27, 46, 0, time.UTC),
@@ -19,7 +19,7 @@ var parseTimeStringTests = []struct {
 	},
 	{
 		"Added on Saturday, 11 July 15 02:25:50",
-		time.Date(2015, 07, 11, 2, 25, 50, 0, time.UTC),		
+		time.Date(2015, 07, 11, 2, 25, 50, 0, time.UTC),
 		nil,
 	},
 	{
@@ -29,12 +29,12 @@ var parseTimeStringTests = []struct {
 	},
 	{
 		"Added on Friday, March 28, 2014, 10:13 PM",
-		time.Date(2014, 3, 28, 22, 13, 0, 0, time.UTC),		
+		time.Date(2014, 3, 28, 22, 13, 0, 0, time.UTC),
 		nil,
 	},
 	{
 		"Added on Friday, March 28, 2014, 10:13 PM",
-		time.Date(2014, 3, 28, 22, 13, 0, 0, time.UTC),		
+		time.Date(2014, 3, 28, 22, 13, 0, 0, time.UTC),
 		nil,
 	},
 	{
@@ -52,12 +52,12 @@ var parseTimeStringTests = []struct {
 func TestParseTimeString(t *testing.T) {
 
 	for _, testData := range parseTimeStringTests {
-		
+
 		res, err := parseTimeString(testData.s)
 
 		fmt.Println(testData, res)
 
-		if expected, ok := testData.expected.(time.Time); ok && !res.Equal(expected){
+		if expected, ok := testData.expected.(time.Time); ok && !res.Equal(expected) {
 			t.Error("Date not equal! string: '", testData.s, "'| res: ", res.Local(), "| expected: ", expected.Local())
 		} else if err != nil && err.Error() != testData.e.Error() {
 			fmt.Println(len(err.Error()), len(testData.e.Error()))
