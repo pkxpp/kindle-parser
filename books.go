@@ -18,24 +18,24 @@ func NewBook(author, title string) Book {
 }
 
 func (b *Book) Equals(other Book) bool {
-	if b.Author==other.Author && b.Title==other.Title {
+	if b.Author == other.Author && b.Title == other.Title {
 		return true
 	}
-	return false 
+	return false
 }
 
 type BookStorage struct {
-	byId map[uint]Book
+	byId     map[uint]Book
 	byAuthor map[string][]uint // should I use list of pointers or pointer on list of books or pointer on list of pointers
-	db *sql.DB
+	db       *sql.DB
 }
 
-type NoSuchBook struct{
+type NoSuchBook struct {
 	book Book
 }
 
 func (e NoSuchBook) Error() string {
-	return fmt.Sprintf("No such book in storage: %s", e.book )
+	return fmt.Sprintf("No such book in storage: %s", e.book)
 }
 
 func NewBookStorage(db *sql.DB) BookStorage {
@@ -51,7 +51,7 @@ func (bs *BookStorage) Add(b Book) (Book, error) {
 
 	fmt.Printf("From bs.Add 1 | b: %v | err: %v\n", b, err)
 	if err != nil {
-		return b, err // TODO: maybe better return Book{} ? 
+		return b, err // TODO: maybe better return Book{} ?
 	}
 	bs.byId[b.Id] = b
 	bs.byAuthor[b.Author] = append(bs.byAuthor[b.Author], b.Id)
@@ -102,7 +102,6 @@ func (bs *BookStorage) GetIdByBook(b Book) (id uint, err error) {
 	}
 	return 0, NoSuchBook{b}
 }
-
 
 func (bs *BookStorage) Contains(b Book) bool {
 	return false

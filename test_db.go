@@ -2,10 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"io/ioutil"
 	_ "github.com/mattn/go-sqlite3"
+	"io/ioutil"
 )
-
 
 func getTestDB() *sql.DB {
 
@@ -26,7 +25,7 @@ func getTestDB() *sql.DB {
 		panic(e)
 	}
 
-// 	defer db.Close() // TODO: do I need to close it? Where?
+	// 	defer db.Close() // TODO: do I need to close it? Where?
 
 	return db
 }

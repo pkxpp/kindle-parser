@@ -44,22 +44,19 @@ var books = []Book{
 	NewBook("Robert Martin", "Clean Code"),
 }
 
-
-
-
 func TestBookStorage(t *testing.T) {
 
 	bs := NewBookStorage(getTestDB())
 
-//	fmt.Println(bs)
+	//	fmt.Println(bs)
 
 	bs.Add(books[0])
 	checkLenBs(&bs, t, 1)
 
 	fmt.Println(bs.Books())
 
-//	bs.AddIfMissing(books[0])
-//	checkLenBs(&bs, t, 1)
+	//	bs.AddIfMissing(books[0])
+	//	checkLenBs(&bs, t, 1)
 
 	// ob := Book{0, "Iain Banks", "Excession"}
 	// bs.Remove(ob)
