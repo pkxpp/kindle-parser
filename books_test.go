@@ -44,36 +44,36 @@ var books = []Book{
 	NewBook("Robert Martin", "Clean Code"),
 }
 
+
+
+
 func TestBookStorage(t *testing.T) {
 
-	bs := NewBookStorage()
+	bs := NewBookStorage(getTestDB())
 
-	fmt.Println(bs)
+//	fmt.Println(bs)
 
-	bs.Add(&books[0])
+	bs.Add(books[0])
 	checkLenBs(&bs, t, 1)
 
-	bs.AddIfMissing(&books[0])
-	checkLenBs(&bs, t, 1)
+	fmt.Println(bs.Books())
 
-	ob := Book{0, "Iain Banks", "Excession"}
-	bs.Remove(&ob)
-	checkLenBs(&bs, t, 0)
+//	bs.AddIfMissing(books[0])
+//	checkLenBs(&bs, t, 1)
 
-	for _, book := range books {
-		bs.Add(&book)
-	}
-	checkLenBs(&bs, t, len(books))
+	// ob := Book{0, "Iain Banks", "Excession"}
+	// bs.Remove(ob)
+	// checkLenBs(&bs, t, 0)
 
-	books[0].Title = "Use of Weapons"
-
-	fmt.Println(bs, books)
-
+	// for _, book := range books {
+	// 	bs.Add(book)
+	// }
+	// checkLenBs(&bs, t, len(books))
 }
 
 func checkLenBs(bs *BookStorage, t *testing.T, expected int) {
 	if len := bs.Len(); len != expected {
-		t.Errorf("Wrong Len of BookStorage. Actual: %d. Expected: %", len, expected)
+		t.Errorf("Wrong Len of BookStorage. Actual: %d. Expected: %d", len, expected)
 	}
 }
 

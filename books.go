@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	//	"regexp"
 	"strings"
@@ -16,66 +17,103 @@ func NewBook(author, title string) Book {
 	return Book{0, author, title}
 }
 
+func (b *Book) Equals(other Book) bool {
+	if b.Author==other.Author && b.Title==other.Title {
+		return true
+	}
+	return false 
+}
+
 type BookStorage struct {
-	storage  []Book
+	byId map[uint]Book
 	byAuthor map[string][]uint // should I use list of pointers or pointer on list of books or pointer on list of pointers
+	db *sql.DB
 }
 
-func NewBookStorage() BookStorage {
-	return BookStorage{make([]Book, 0), make(map[string][]uint)}
+type NoSuchBook struct{
+	book Book
 }
 
-func (bs *BookStorage) Books() *[]Book {
-	return &bs.storage
+func (e NoSuchBook) Error() string {
+	return fmt.Sprintf("No such book in storage: %s", e.book )
 }
 
-func (bs *BookStorage) Add(bp *Book) error {
-	bs.storage = append(bs.storage, *bp)
-	bs.byAuthor[bp.Author] = append(bs.byAuthor[bp.Author], uint(len(bs.storage)-1))
-	return nil
+func NewBookStorage(db *sql.DB) BookStorage {
+	return BookStorage{make(map[uint]Book), make(map[string][]uint), db}
 }
 
-func (bs *BookStorage) AddIfMissing(bp *Book) error { // TODO: now it doesn't change pointer like before | It's too complicated and error-prone
-	if indexes, ok := bs.byAuthor[bp.Author]; ok {
+func (bs *BookStorage) Books() map[uint]Book {
+	return bs.byId
+}
+
+func (bs *BookStorage) Add(b Book) (Book, error) {
+	b, err := bs.store(b)
+
+	fmt.Printf("From bs.Add 1 | b: %v | err: %v\n", b, err)
+	if err != nil {
+		return b, err // TODO: maybe better return Book{} ? 
+	}
+	bs.byId[b.Id] = b
+	bs.byAuthor[b.Author] = append(bs.byAuthor[b.Author], b.Id)
+	return b, err
+}
+
+func (bs *BookStorage) store(b Book) (Book, error) {
+	stmt, err := bs.db.Prepare("INSERT INTO books(author, title) VALUES(?, ?)")
+	if err != nil {
+		return b, err
+	}
+	res, err := stmt.Exec(b.Author, b.Title)
+	if err != nil {
+		return b, err
+	}
+
+	lastId, err := res.LastInsertId()
+	if err != nil {
+		return b, err
+	}
+	b.Id = uint(lastId)
+	return b, nil
+}
+
+func (bs *BookStorage) AddIfMissing(b Book) (Book, error) { // TODO: now it doesn't change pointer like before | It's too complicated and error-prone
+	id, err := bs.GetIdByBook(b)
+	_, okError := err.(NoSuchBook)
+	if err == nil && id != 0 {
+		return bs.byId[id], nil
+	} else if !okError {
+		return b, err
+	}
+
+	return bs.Add(b)
+}
+
+func (bs *BookStorage) GetIdByBook(b Book) (id uint, err error) {
+	if indexes, ok := bs.byAuthor[b.Author]; ok {
 		for _, i := range indexes {
-			if *bp == bs.storage[i] {
-				bp = &bs.storage[i] // TODO: this is pointles
-				return nil
+			if book := bs.byId[i]; book.Equals(b) {
+				if book.Id == 0 {
+					// TODO: it must never happen, I probably shouldn't care
+					return 0, fmt.Errorf("Book (%s) in storage but doesn't have valid Id. bs.storage id: %d", bs.byId[i], i)
+				}
+				return book.Id, nil
 			}
 		}
 	}
-	return bs.Add(bp)
+	return 0, NoSuchBook{b}
 }
 
-func (bs *BookStorage) Contains(bp *Book) bool {
-	if indexes, ok := bs.byAuthor[bp.Author]; ok {
-		for _, i := range indexes {
-			if *bp == bs.storage[i] {
-				return true
-			}
-		}
-	}
+
+func (bs *BookStorage) Contains(b Book) bool {
 	return false
 }
 
-func (bs *BookStorage) Remove(bp *Book) error {
-	if indexes, ok := bs.byAuthor[bp.Author]; ok {
-		for i := range indexes {
-			if *bp == bs.storage[indexes[i]] {
-				bs.storage = append(bs.storage[:i], bs.storage[i+1:]...)                                     // TODO: it might be very costly, consider list usage
-				bs.byAuthor[bp.Author] = append(bs.byAuthor[bp.Author][:i], bs.byAuthor[bp.Author][i+1:]...) // TODO: it might panic
-			}
-		}
-	}
-	return fmt.Errorf("Storage doesn't contain such book: %v ", bp)
+func (bs *BookStorage) Remove(b Book) error {
+	return nil
 }
 
 func (bs *BookStorage) Len() int {
-	res := 0
-	for _, s := range bs.byAuthor {
-		res += len(s)
-	}
-	return res
+	return len(bs.byId)
 }
 
 func CreateBook(s string) (Book, error) {
