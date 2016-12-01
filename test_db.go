@@ -8,7 +8,7 @@ import (
 
 func getTestDB() *sql.DB {
 
-	DbVendor, DbConnString := "sqlite3", ":memory"
+	DbVendor, DbConnString := "sqlite3", ":memory:"
 
 	db, e := sql.Open(DbVendor, DbConnString)
 	if e != nil {
