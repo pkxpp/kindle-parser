@@ -12,7 +12,7 @@ import (
 )
 
 type Highlight struct {
-	Book     *Book
+	BookId   uint
 	Text     string
 	Page     int
 	Location string
@@ -20,7 +20,7 @@ type Highlight struct {
 }
 
 func (h *Highlight) IsZero() bool {
-	return h.Book == nil && h.Text == "" && h.Page == 0 && h.Location == "" && h.Time.IsZero()
+	return h.BookId == 0 && h.Text == "" && h.Page == 0 && h.Location == "" && h.Time.IsZero()
 }
 
 func (h *Highlight) SetText(text string) {
@@ -30,14 +30,12 @@ func (h *Highlight) SetText(text string) {
 type HighlightStorage struct {
 	storage []Highlight
 	byText  map[string][]uint
-	byBook  map[Book][]uint
 }
 
 func NewHighlightStorage() HighlightStorage { // TODO: default argument
 	return HighlightStorage{
 		make([]Highlight, 0, 20),
 		make(map[string][]uint),
-		make(map[Book][]uint),
 	}
 }
 
@@ -56,7 +54,6 @@ func (hs *HighlightStorage) Add(h Highlight) error {
 	}
 
 	hs.byText[h.Text] = append(hs.byText[h.Text], uint(index))
-	hs.byBook[*h.Book] = append(hs.byBook[*h.Book], uint(index))
 
 	//	fmt.Println("hs.ByText, hs.byBook: ", hs.byText, hs.byBook)
 	return nil

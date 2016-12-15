@@ -19,14 +19,6 @@ func main() {
 		fmt.Println(&hs.storage[i], hs.storage[i])
 	}
 
-	books := bs.storage
-
-	for i := range books {
-		fmt.Println(&books[i], books[i])
-	}
-
-	saveBooks(bs)
-
 	SaveToDb(hs)
 
 }

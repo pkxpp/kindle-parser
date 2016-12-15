@@ -22,7 +22,7 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 
 	scanner := bufio.NewScanner(file)
 
-	bs := NewBookStorage()
+	bs := NewBookStorage(GetDb(DbVendor, DbConnString))
 	hs := NewHighlightStorage()
 
 	si := 1
@@ -32,7 +32,6 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 
 	for scanner.Scan() {
 
-		var bp *Book
 		currentString := scanner.Text()
 
 		if len(currentString) > 3 && currentString[0:3] == "===" {
@@ -50,7 +49,8 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 			continue
 		}
 
-		if si == 1 {
+		switch si {
+		case 1:
 			book, e := CreateBook(currentString) // TODO: this is ugly and probably stupid
 			if e != nil {
 				log.Printf("Couldn't create a book from string '%s'", currentString)
@@ -58,14 +58,14 @@ func ParseFile(filename string) (*HighlightStorage, *BookStorage, error) {
 				continue
 			}
 
-			bp = &book
-			check(e)
-			e = bs.AddIfMissing(bp)
-			check(e)
-			highlight.Book = bp // TODO: pointer isn't changed! This is definetly a bug!
-		} else if si == 2 {
+			book, e = bs.AddIfMissing(book)
+			if e != nil {
+				log.Printf("Got error while eddit book: %s", e.Error())
+			}
+			highlight.BookId = book.Id // TODO: return only Id from BookStorage
+		case 2:
 			highlight.Page, highlight.Location, highlight.Time, _ = parseMetaString(currentString)
-		} else if si == 4 {
+		case 4:
 			highlight.SetText(currentString)
 		}
 

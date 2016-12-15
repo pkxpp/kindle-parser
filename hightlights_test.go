@@ -14,12 +14,12 @@ var b = []Book{
 }
 
 var highlights = []Highlight{
-	{&b[0], "some word", 0, "30-31", time.Date(2016, 4, 19, 6, 36, 12, 0, time.UTC)},
-	{&b[0], "exception", 0, "340-340", time.Date(2016, 5, 20, 16, 20, 12, 0, time.UTC)},
-	{&b[0], " Entertain", 0, "30-31", time.Date(2016, 4, 19, 6, 33, 2, 0, time.UTC)},
-	{&b[1], "Some very long string", 0, "30-31", time.Date(2015, 9, 19, 13, 36, 17, 0, time.UTC)},
-	{&b[1], "exception", 0, "1-3", time.Date(2016, 5, 20, 16, 20, 12, 0, time.UTC)},
-	{&b[3], "WTF???????????????", 0, "30-31", time.Date(2015, 10, 19, 7, 36, 23, 0, time.UTC)},
+	{1, "some word", 0, "30-31", time.Date(2016, 4, 19, 6, 36, 12, 0, time.UTC)},
+	{1, "exception", 0, "340-340", time.Date(2016, 5, 20, 16, 20, 12, 0, time.UTC)},
+	{1, " Entertain", 0, "30-31", time.Date(2016, 4, 19, 6, 33, 2, 0, time.UTC)},
+	{1, "Some very long string", 0, "30-31", time.Date(2015, 9, 19, 13, 36, 17, 0, time.UTC)},
+	{1, "exception", 0, "1-3", time.Date(2016, 5, 20, 16, 20, 12, 0, time.UTC)},
+	{1, "WTF???????????????", 0, "30-31", time.Date(2015, 10, 19, 7, 36, 23, 0, time.UTC)},
 }
 
 var setTextExamples = []struct {
