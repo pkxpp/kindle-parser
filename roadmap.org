@@ -1,0 +1,3 @@
+* What should it do
+** TODO It should parse highlight file(s), and add only new highlight to database
+

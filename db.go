@@ -13,6 +13,7 @@ var db sql.DB
 
 func GetDb(DbVendor, DbConnString string) *sql.DB {
 	db, e := sql.Open(DbVendor, DbConnString)
+	db.Exec("PRAGMA foreign_keys = ON;")
 	if e != nil {
 		log.Fatal(e)
 	}
@@ -39,7 +40,7 @@ INSERT INTO highlights(text, page, location, time, book_id) VALUES(?, ?, ?, ?, ?
 			log.Fatal(err)
 		}
 
-		res, err := stmt.Exec(highlight.Text, highlight.Page, highlight.Location, highlight.Time, 1)
+		res, err := stmt.Exec(highlight.Text, highlight.Page, highlight.Location, highlight.Time, highlight.BookId)
 		if err != nil {
 			log.Fatal(err)
 		}
